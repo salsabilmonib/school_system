@@ -9,12 +9,11 @@ class Cookie
     private static string $domain = '';
     private static bool $secure = false; // Set to true if using HTTPS
     private static bool $httponly = false; // Prevents JavaScript access
-    private static string $samesite = 'Lax';
+    private static string $sameSite = 'Lax';
 
     // Set a standalone cookie
     public static function set(string $key, string $value, int $expiry = 3600,  string $path = '/', string $domain = '', bool $secure = false, bool $httponly = true): bool
     {
-
         return setcookie(
             $key,
             $value,

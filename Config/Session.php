@@ -12,15 +12,6 @@ class Session
           }
 
           if (session_status() === PHP_SESSION_NONE) {
-
-
-
-               // 2. Lock down the global cookie parameters configuration
-               session_set_cookie_params([
-                    'path'     => '/',       // CRITICAL: Forces WAMP to share this cookie across Controllers and Views
-                    'httponly' => true,      // Prevents JavaScript theft exploits
-                    'samesite' => 'Lax'
-               ]);
                session_start();
                self::$isStarted = true;
           }

@@ -8,21 +8,22 @@ require_once __DIR__ . '/../autoloader.php';
 
 class FlashBag
 {
+    const SESSION_NAME = 'flash_bag';
     public static function add(string $type, string $message): void
     {
 
-        $flashbag = Session::get('flashbag') ?? [];
-        $flashbag[$type][] = $message;
-        Session::set('flashbag', $flashbag);
+        $flashBag = Session::get(self::SESSION_NAME) ?? [];
+        $flashBag[$type][] = $message;
+        Session::set(self::SESSION_NAME, $flashBag);
     }
 
     public static function get(string $type): ?string
     {
-        if (Session::has('flashbag') && isset(Session::get('flashbag')[$type])) {
-            $message = Session::get('flashbag')[$type];
-            $flashbag = Session::get('flashbag');
-            unset($flashbag[$type]);
-            Session::set('flashbag', $flashbag);
+        if (Session::has(self::SESSION_NAME) && isset(Session::get(self::SESSION_NAME)[$type])) {
+            $message = Session::get(self::SESSION_NAME)[$type];
+            $flashBag = Session::get(self::SESSION_NAME);
+            unset($flashBag[$type]);
+            Session::set(self::SESSION_NAME, $flashBag);
             return $message;
         }
         return null;
@@ -30,13 +31,13 @@ class FlashBag
 
     public static function getAll(): array
     {
-        $flashBag = Session::get('flashbag') ?? [];
-        Session::set('flashbag', []); // Clear all messages after retrieval
+        $flashBag = Session::get(self::SESSION_NAME) ?? [];
+        Session::set(self::SESSION_NAME, []); // Clear all messages after retrieval
         return $flashBag;
     }
 
     public static function has(string $type): bool
     {
-        return isset(Session::get('flashbag')[$type]);
+        return isset(Session::get(self::SESSION_NAME)[$type]);
     }
 }

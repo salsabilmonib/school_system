@@ -42,29 +42,17 @@ class AuthController
                 Session::set('username', $user['username']);
                 Session::set('role', $user['role']);
 
-
-                echo Session::get('username');
-
-
                 // 5. Handle "Remember Me"
                 if (isset($_POST['remember'])) {
                     $lifetime = 120; // 20 minutes (Consider 2592000 for 30 days)
                     $expiryTime = time() + $lifetime;
-                } else {
-                    $expiryTime = 0; // Expires when browser closes
-                }
 
-                $params = session_get_cookie_params();
-                var_dump(session_id());
-                Cookie::set(
-                    session_name(),
-                    session_id(),
-                    $expiryTime,
-                    "/",
-                    $params["domain"],
-                    $params["secure"],
-                    $params["httponly"]
-                );
+                    Cookie::set(
+                        'user_id',
+                        $user['id'],
+                        $expiryTime,
+                    );
+                }
 
                 // 7. Render dashboard directly with active session open
                 $this->showDashboard();
@@ -78,10 +66,9 @@ class AuthController
     public function logout()
     {
 
-        Cookie::delete(session_name());
+        Cookie::delete('user_id');
         Session::destroy();
         Helpers::redirect("login.php?success=Logged out successfully.");
-        exit();
     }
 
     public function showDashboard()

@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\User;
-use Config\Flashbag;
+use Config\FlashBag;
 use Config\Helpers;
 use Config\Pagination;
 
@@ -92,13 +92,11 @@ class UserController
             $updated_by = $_POST['current_logged_in_user'] ?? '';
 
             $this->userModel->updateUser($user_id, $username, $password, $role, $updated_at, $updated_by);
-            Flashbag::add('success', 'User updated successfully!');
+            FlashBag::add('success', 'User updated successfully!');
             Helpers::redirect("adminDashboard.php");
-            exit();
         } else {
-            Flashbag::add('warning', 'Field cannot be empty.');
+            FlashBag::add('warning', 'Field cannot be empty.');
             Helpers::redirect("adminDashboard.php");
-            exit();
         }
     }
 }
