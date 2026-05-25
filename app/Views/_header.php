@@ -22,17 +22,17 @@ if (isset($_POST['logout'])) {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="../../public/assets/css/bootstrap.min.css">
-    <title>Dashboard</title>
+    <title>School Management System</title>
 
 
 </head>
 
 <body class="bg-light">
 
-    <header class="navbar navbar-dark bg-secondary shadow-sm p-3">
+    <header class="navbar navbar-dark" style="background-color: #5945cc" shadow-sm p-4>
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
-            <a class="navbar-brand mb-0 h1" href="#">Dashboard</a>
+            <a class="navbar-brand mb-0 h1" href="#">School Management System</a>
 
             <form method="POST" class="m-0">
                 <button type="submit" name="logout" class="btn btn-danger">Logout</button>
@@ -40,7 +40,7 @@ if (isset($_POST['logout'])) {
 
         </div>
     </header>
-    <div class="container mt-5">
+    <div class="container-fluid px-0 ">
 
         <?php $messages = FlashBag::getAll(); ?>
         <?php foreach ($messages as $type => $msgs): ?>
@@ -50,3 +50,10 @@ if (isset($_POST['logout'])) {
                 <?php endforeach; ?>
             </div>
         <?php endforeach; ?>
+
+
+        <?php require_once '_header.php'; ?>
+        <div class="d-flex">
+            <div> <?php
+                    require_once '_sidebar.php'; ?> </div>
+            <div class="flex-grow-1 p-4">

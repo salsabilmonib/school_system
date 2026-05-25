@@ -52,8 +52,7 @@ class User
             'username' => $username,
             'password' => $password,
             'role' => $role,
-            'created_at' => date('Y-m-d H:i:s'),
-            'created_by' => $created_by
+         
         ]);
     }
 
@@ -63,14 +62,24 @@ class User
         return Database::fetchOne($sql, ['id' => $user_id]);
     }
 
-    public function updateUser($user_id, $username, $password, $role, $updated_at, $updated_by)
+    public function updateUser($user_id, $username, $role, $updated_at, $updated_by)
     {
-        $sql = "UPDATE users SET username = :username, password = :password, role = :role, updated_at = :updated_at, updated_by = :updated_by WHERE id = :id";
+        $sql = "UPDATE users SET username = :username, role = :role, updated_at = :updated_at, updated_by = :updated_by WHERE id = :id";
         return Database::fetchOne($sql, [
             'id' => $user_id,
             'username' => $username,
-            'password' => $password,
             'role' => $role,
+            'updated_at' => date('Y-m-d H:i:s'),
+            'updated_by' => $updated_by
+        ]);
+    }
+
+    public function updatePassword($user_id, $password, $updated_at, $updated_by)
+    {
+        $sql = "UPDATE users SET password = :password, updated_at = :updated_at, updated_by = :updated_by WHERE id = :id";
+        return Database::fetchOne($sql, [
+            'id' => $user_id,
+            'password' => $password,
             'updated_at' => date('Y-m-d H:i:s'),
             'updated_by' => $updated_by
         ]);

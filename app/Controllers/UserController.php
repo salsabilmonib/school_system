@@ -14,6 +14,7 @@ class UserController
 
     private User $userModel;
     private Pagination $pagination;
+    public array $paginatedUsers = [];
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ class UserController
         $total_records = $this->getTotalUserCount();
         $this->pagination = new Pagination($cur_page, $total_records, $per_page);
         $offset = $this->pagination->offSet();
+        $this->paginatedUsers = $this->userModel->getPaginatedUsers($offset, $per_page);
     }
     public function create_user()
     {
@@ -84,18 +86,33 @@ class UserController
 
     public function update_user($user_id)
     {
-        if (!empty($_POST['username']) || !empty($_POST['role']) || !empty($_POST['password'])) {
+        if (!empty($_POST['username']) || !empty($_POST['role'])) {
             $username = trim($_POST['username']);
             $role = $_POST['role'];
-            $password = $_POST['password'] ?? '';
             $updated_at = date('Y-m-d H:i:s');
             $updated_by = $_POST['current_logged_in_user'] ?? '';
 
-            $this->userModel->updateUser($user_id, $username, $password, $role, $updated_at, $updated_by);
+            $this->userModel->updateUser($user_id, $username, $role, $updated_at, $updated_by);
             FlashBag::add('success', 'User updated successfully!');
             Helpers::redirect("adminDashboard.php");
         } else {
             FlashBag::add('warning', 'Field cannot be empty.');
+            Helpers::redirect("adminDashboard.php");
+        }
+    }
+
+    public function update_password($user_id)
+    {
+        if (!empty($_POST['password'])) {
+            $password = $_POST['password'];
+            $updated_at = date('Y-m-d H:i:s');
+            $updated_by = $_POST['current_logged_in_user'] ?? '';
+
+            $this->userModel->updatePassword($user_id, $password, $updated_at, $updated_by);
+            FlashBag::add('success', 'Password updated successfully!');
+            Helpers::redirect("adminDashboard.php");
+        } else {
+            FlashBag::add('warning', 'Password field cannot be empty.');
             Helpers::redirect("adminDashboard.php");
         }
     }
@@ -115,4 +132,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete_user') {
 if (isset($_GET['action']) && $_GET['action'] === 'update_user') {
     $userController = new UserController();
     $userController->update_user($_GET['id']);
+}
+
+
+if (isset($_GET['action']) && $_GET['action'] === 'update_password') {
+    $userController = new UserController();
+    $userController->update_password($_GET['id']);
 }

@@ -22,6 +22,8 @@ $user_role = Session::get('role');
 
 $all_users = $userController->getAllUsers();
 
+
+
 if ($user_role != 'admin') {
     Helpers::redirect('login.php?error=Access Denied. Admins only.');
     exit();
@@ -30,6 +32,7 @@ if ($user_role != 'admin') {
 ?>
 
 <?php require_once '_header.php'; ?>
+
 
 
 
@@ -45,10 +48,13 @@ if ($user_role != 'admin') {
         <h5 class="text-dark fw-bold mb-3">Users</h5>
 
 
-        <div class="input-group input-group-sm mb-4" style="max-width: 250px;">
-            <input class="form-control  ps-2" id="tableSearch" type="text" placeholder="Search...">
-        </div>
 
+
+        <div class="d-flex align-items-center px-3 py-2 gap-2" style="border: 1px solid #cbd5e1; border-radius: 10px; max-width: 320px; width: 100%; background-color: #f8fafc; transition: border 0.2s ease;">
+            <i class="bi bi-search text-muted" style="font-size: 0.95rem;"></i>
+            <input type="text" id="tableSearch" class="form-control p-0 shadow-none border-0 bg-transparent" placeholder="Search..." style="font-size: 0.95rem; color: #334155;">
+            <i class="bi bi-mic-fill text-muted cursor-pointer" style="font-size: 0.95rem;"></i>
+        </div>
 
         <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover align-middle mt-2">
@@ -95,12 +101,32 @@ if ($user_role != 'admin') {
                                         </svg></button>
                                 </form>
 
-                                <button type="submit" class="btn btn-primary btn-sm"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
-                                        <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.646.647A.5.5 0 0 1 8 10h-.535A4 4 0 0 1 0 8m4-3a3 3 0 1 0 2.712 4.285A.5.5 0 0 1 7.163 9h.63l.853-.854a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.646-.647a.5.5 0 0 1 .708 0l.646.647.793-.793-1-1h-6.63a.5.5 0 0 1-.451-.285A3 3 0 0 0 4 5" />
-                                        <path d="M4 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                                    </svg></button>
+                                <button type="button" data-bs-toggle="modal" data-bs-target="#editPasswordModal<?php echo $row['id']; ?>" data-bs-userid="<?php echo $row['id']; ?>" class="btn btn-primary btn-sm"> edit</button>
+                                <p><?php echo htmlspecialchars($row['id']); ?></p>
 
-                            </td>
+                                <div class="modal fade" id="editPasswordModal<?php echo $row['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editPasswordModalLabel">Edit Password</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form method="POST" action="../Controllers/UserController.php?action=update_password&id=<?php echo $row['id']; ?>">
+                                                <p><?php echo htmlspecialchars($row['id']); ?></p>
+                                                <input type="hidden" name="current_logged_in_user" value="<?php echo $_SESSION['username']; ?>">
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label for="password" class="col-form-label">New Password:</label>
+                                                        <input type="password" name="password" class="form-control" id="password">
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="submit" value="Edit" class="btn btn-primary">Confirm</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -134,50 +160,18 @@ if ($user_role != 'admin') {
                 </form>
 
             </table>
-            <!-- 
-            <nav aria-label="Page navigation example">
-                <ul class="pagination">
-
-
-                    <?php if ($pagination->hasPrevPage()): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $pagination->cur_page - 1; ?>">Previous</a>
-                        </li>
-                    <?php else: ?>
-                        <li class="page-item disabled"><span class="page-link">Previous</span></li>
-                    <?php endif; ?>
-                    </li>
-
-
-                    <?php for ($i = 1; $i <= $pagination->getTotalPages(); $i++): ?>
-                        <?php if ($i == $pagination->cur_page): ?>
-                            <li class="page-item active"><span class="page-link"><?php echo $i; ?></span></li>
-                        <?php else: ?>
-                            <li class="page-item">
-                                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                            </li>
-                        <?php endif; ?>
-                    <?php endfor; ?>
 
 
 
-                    <?php if ($pagination->hasNextPage()): ?>
-                        <li class="page-item">
-                            <a class="page-link" href="?page=<?php echo $pagination->cur_page + 1; ?>">Next</a>
-                        </li>
-                    <?php else: ?>
-                        <li class="page-item disabled"><span class="page-link">Next</span></li>
-                    <?php endif; ?>
 
-                </ul>
-            </nav> -->
+
         </div>
-
     </div>
 </div>
-</div>
 
-<script src="../../public/assets/js/bootstrap.bundle.min.js"></script>
+
+
+<script src="../../public/assets/js/bootstrap.bundle.min.js"> </script>
 <script>
     document.getElementById('tableSearch').addEventListener('keyup', function() {
         // Get the search input value and convert to lowercase
